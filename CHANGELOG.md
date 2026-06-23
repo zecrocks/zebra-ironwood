@@ -85,6 +85,17 @@ and this project adheres to [Semantic Versioning](https://semver.org).
 - Added Ironwood RPC output for `getblock`, `getblockchaininfo`,
   `getrawtransaction`, `z_gettreestate`, and `z_getsubtreesbyindex`.
 
+### Fixed
+
+- Register the NU6.3 (Ironwood) consensus branch ID (`0xffffffff`) whenever
+  NU6.3 is enabled (`zcash_unstable = "nu6.3"`), not only in test builds. The
+  entry was previously gated to `cfg(any(test, feature = "zebra-test"))`, so the
+  shipped nu6.3-enabled release binary had no NU6.3 branch-ID mapping. This left
+  `NetworkUpgrade::Nu6_3.branch_id()` and the `0xffffffff → Nu6_3` conversion
+  undefined, causing the NU6.3 activation block to fail verification with
+  `WrongTransactionConsensusBranchId` (for example when mining via the `generate`
+  RPC on a Regtest network configured with an NU6.3 activation height).
+
 ### Changed
 
 - Parallelize NU5-onward block auth-data-root computation across transactions,
